@@ -1055,10 +1055,67 @@ class GreaterOrEqualNode : public RelationalOperatorNode
 };
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+/* NEW in version 0.2 */
 
+    /*!
+      \class   OperatorAssignmentNode
+      \brief   Definition of atributes and methods of OperatorAssignmentNode class
+      \warning Abstract class
+    */
+    class OperatorAssignmentNode
+    {
+    protected:
+        std::string _id;
+
+    public:
+
+        OperatorAssignmentNode(std::string id)
+        {
+            this->_id = id;
+        }
+
+        virtual void print() = 0;
+
+        virtual double evaluateNumber()
+        {
+            return 0.0;
+        }
+    };
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+/* NEW in version 0.2 */
+
+    /*!
+      \class   IncrementNode
+      \brief   Definition of atributes and methods of IncrementNode class
+    */
+class IncrementNode : public OperatorAssignmentNode
+{
+private:
+        int _inc;
+
+public:
+
+        IncrementNode(std::string const &id, int inc) : OperatorAssignmentNode(id)
+        {
+            this->_inc = inc;
+        }
+
+        IncrementNode(std::string const &id, ExpNode *exp, int sign) : OperatorAssignmentNode(id)
+        {
+            this->_inc = exp->evaluateNumber() * sign;
+        }
+
+        void print();
+
+        double evaluateNumber();
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 /*!	
   \class   LessThanNode
@@ -1574,12 +1631,14 @@ class EmptyStmt : public Statement
   \note    IfStmt Class publicly inherits from Statement class 
 		       and adds its own printAST and evaluate functions
 */
-class IfStmt : public Statement 
+class IfStmtlist : public Statement 
 {
  private:
   ExpNode *_cond;    //!< Condicion of the if statement
-  Statement *_stmt1; //!< Statement of the consequent
-  Statement *_stmt2; //!< Statement of the alternative
+  //Statement *_stmt1; //!< Statement of the consequent
+  //Statement *_stmt2; //!< Statement of the alternative
+  std::list<Statement *> *_stmts1; //!< Statement of the consequent
+  std::list<Statement *> *_stmts2; //!< Statement of the alternative
 
   public:
 /*!		
@@ -1588,11 +1647,11 @@ class IfStmt : public Statement
 	\param statement1: Statement of the consequent
 	\post  A new IfStmt is created with the parameters
 */
-  IfStmt(ExpNode *condition, Statement *statement1)
+  IfStmtlist(ExpNode *condition, std::list<Statement *> *_statementList1)
 	{
 		this->_cond = condition;
-		this->_stmt1 = statement1;
-		this->_stmt2 = NULL;
+		this->_stmts1 = _statementList1;
+		this->_stmts2 = NULL;
 	}
 
 
@@ -1603,11 +1662,11 @@ class IfStmt : public Statement
 	\param statement2: Statement of the alternative
 	\post  A new IfStmt is created with the parameters
 */
-  IfStmt(ExpNode *condition, Statement *statement1, Statement *statement2)
+  IfStmtlist(ExpNode *condition, std::list<Statement *> *_statementList1, std::list<Statement *> *_statementList2)
 	{
 		this->_cond = condition;
-		this->_stmt1 = statement1;
-		this->_stmt2 = statement2;
+		this->_stmts1 = _statementList1;
+		this->_stmts2 = _statementList2;
 	}
 
 
@@ -1640,11 +1699,12 @@ class IfStmt : public Statement
   \note    WhileStmt Class publicly inherits from Statement class 
 		       and adds its own printAST and evaluate functions
 */
-class WhileStmt : public Statement 
+class WhileStmtlist : public Statement 
 {
  private:
   ExpNode *_cond; //!< Condicion of the while statement
-  Statement *_stmt; //!< Statement of the body of the while loop
+  //Statement *_stmt; //!< Statement of the body of the while loop
+  std::list<Statement *> *_stmts;
 
   public:
 /*!		
@@ -1653,10 +1713,10 @@ class WhileStmt : public Statement
 	\param statement: Statement of the body of the loop 
 	\post  A new WhileStmt is created with the parameters
 */
-  WhileStmt(ExpNode *condition, Statement *statement)
+  WhileStmtlist(ExpNode *condition, std::list<Statement *> *statement)
 	{
 		this->_cond = condition;
-		this->_stmt = statement;
+		this->_stmts = statement;
 	}
 
 

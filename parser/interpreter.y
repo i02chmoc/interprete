@@ -148,6 +148,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
   lp::Statement *st;				 /* NEW in example 16 */
   lp::AST *prog;					 /* NEW in example 16 */
   char * identifier; 			/* NEW in version 0.1 */
+  lp::OperatorAssignmentNode *opAssignNode; 			/* New in version 0.2 */
 }
 
 /* Type of the non-terminal symbols */
@@ -160,7 +161,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %type <stmts> stmtlist
 
 // New in example 17: if, while, block
-%type <st> stmt asgn print read if while block
+%type <st> stmt asgn print read if while block 
 
 %type <prog> program
 
@@ -185,7 +186,8 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 /* NEW in example 14 */
 %token COMMA
 
- 
+%type <opAssignNode> inc /* NEW in version 0.2 */
+
 /* NEW in version 0.1 */
 %token PRINT_STRING READ_STRING THEN END_IF DO END_WHILE REPEAT UNTIL FOR FROM TO STEP END_FOR  CASE VALUE DEFAULT END_CASE CLEAR_SCREEN_TOKEN PLACE
 %token <string> STRING
@@ -224,7 +226,8 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 
 %left LPAREN RPAREN
 
-%nonassoc  UNARY
+/* MODIFIED in version 0.2 */
+%nonassoc  UNARY INCREMENT DECREMENT
 
 // Maximum precedence 
 /* MODIFIED in example 5 */
@@ -327,8 +330,36 @@ stmt: SEMICOLON  /* Empty statement: ";" */
 		// Default action
 		// $$ = $1;
 	 }
+    /*  NEW in version 0.2 */
+	| inc
+	 {
+		 // Default action
+		 // $$ = $1;
+	 }
 ;
 
+/* NEW in version 0.2 */
+inc :  	VARIABLE INCREMENT
+		{ 
+			// Create a new IncrementNode
+			$$ = new lp::IncrementNode($1, 1);
+		}
+    | 	INCREMENT VARIABLE 
+		{ 
+			// Create a new IncrementNode
+			$$ = new lp::IncrementNode($2, 1);		 
+		 }
+	| 	VARIABLE DECREMENT
+      	{
+			// Create a new IncrementNode
+			$$ = new lp::IncrementNode($1, -1);
+		}
+	| 	DECREMENT VARIABLE
+      	{
+			// Create a new IncrementNode
+			$$ = new lp::IncrementNode($2, -1);
+		}
+;
 
 block: LETFCURLYBRACKET stmtlist RIGHTCURLYBRACKET  
 		{
@@ -346,20 +377,20 @@ controlSymbol:  /* Epsilon rule*/
 
 	/*  NEW in example 17 */
 if:	/* Simple conditional statement */
-	IF controlSymbol cond stmt 
+	IF controlSymbol cond THEN stmtlist END_IF
     {
 		// Create a new if statement node
-		$$ = new lp::IfStmt($3, $4);
+		$$ = new lp::IfStmtlist($3, $5);
 
 		// To control the interactive mode
 		control--;
 	}
 
 	/* Compound conditional statement */
-	| IF controlSymbol cond stmt  ELSE stmt 
+	| IF controlSymbol cond THEN stmtlist  ELSE stmtlist END_IF 
 	 {
 		// Create a new if statement node
-		$$ = new lp::IfStmt($3, $4, $6);
+		$$ = new lp::IfStmtlist($3, $5, $7);
 
 		// To control the interactive mode
 		control--;
@@ -367,10 +398,10 @@ if:	/* Simple conditional statement */
 ;
 
 	/*  NEW in example 17 */
-while:  WHILE controlSymbol cond stmt 
+while:  WHILE controlSymbol cond DO stmtlist END_WHILE
 		{
 			// Create a new while statement node
-			$$ = new lp::WhileStmt($3, $4);
+			$$ = new lp::WhileStmtlist($3, $5);
 
 			// To control the interactive mode
 			control--;

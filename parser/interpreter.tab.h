@@ -102,7 +102,9 @@ extern int yydebug;
     LPAREN = 308,
     RPAREN = 309,
     UNARY = 310,
-    POWER = 311
+    INCREMENT = 311,
+    DECREMENT = 312,
+    POWER = 313
   };
 #endif
 
@@ -121,8 +123,9 @@ union YYSTYPE
   lp::Statement *st;				 /* NEW in example 16 */
   lp::AST *prog;					 /* NEW in example 16 */
   char * identifier; 			/* NEW in version 0.1 */
+  lp::OperatorAssignmentNode *opAssignNode; 			/* New in version 0.2 */
 
-#line 126 "interpreter.tab.h"
+#line 129 "interpreter.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

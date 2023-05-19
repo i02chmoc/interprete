@@ -1,0 +1,6 @@
+version 0.1
+    - palabras reservadas
+
+version 0.2
+    - implementación de stmtlist en IF, WHILE
+    - increment, decrement

@@ -103,26 +103,26 @@ OPERADORES:								[ ]
 	NUMÉRICOS							[ ]
 		ASIGNACION :=				[x]
 		SUMA +						[x]
-			UNARIO +2				[ ]
-			BINARIO 2+3				[ ]
-		RESTA -						[ ]
-			UNARIO -2				[ ]
-			BINARIO 2-3				[ ]
-		PRODUCTO *					[ ]
-		DIVISION /					[ ]
+			UNARIO +2				[x]
+			BINARIO 2+3				[x]
+		RESTA -						[x]
+			UNARIO -2				[x]
+			BINARIO 2-3				[x]
+		PRODUCTO *					[x]
+		DIVISION /					[x]
 		COCIENTE_DIVISION_ENTERA //	[ ]
-		MODULO %					[ ]
-		POTENCIA ^					[ ]
+		MODULO %					[x]
+		POTENCIA ^					[x]
 
 	ALFANUMÉRICOS						[ ]
 		CONCATENACION ||			[ ]
 
-	RELACIONALES CON NÚMEROS Y CADENAS	[ ]
-		MENOR QUE <					[ ]
-		MENOR O IGUAL QUE <=		[ ]
-		MAYOR QUE >					[ ]
-		MAYOR O IGUAL QUE >=		[ ]
-		DISTINTO DE <>				[ ]
+	RELACIONALES CON NÚMEROS Y CADENAS	[x]
+		MENOR QUE <					[x]
+		MENOR O IGUAL QUE <=		[x]
+		MAYOR QUE >					[x]
+		MAYOR O IGUAL QUE >=		[x]
+		DISTINTO DE <>				[x]
 
 	LÓGICOS								[ ]
 		DISYUNCIÓN or				[ ]
@@ -156,18 +156,18 @@ SENTENCIAS DE CONTROL:					[ ]
 		write_string						[ ]
 
 	SENTENCIAS DE CONTROL						[ ]
-		CONDICIONAL SIMPLE					[ ]
+		CONDICIONAL SIMPLE					[x]
 			if condición
 				then lista de sentencias
 			end_if
 
-		CONDICIONAL COMPUESTA				[ ]
+		CONDICIONAL COMPUESTA				[x]
 			if condición
 				then lista de sentencias
 				else lista de sentencias
 			end_if
 
-		BUCLE "while"						[ ]
+		BUCLE "while"						[x]
 			while condición do
 					lista de sentencias
 			end_while

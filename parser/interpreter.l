@@ -157,13 +157,15 @@ CADENA	"'"([^'\\]|"\\\'"|\\n|\\t)*"'"
 "-"		{ return MINUS;  } 			/* NEW in example 3 */
 "+"		{ return PLUS;   } 			/* NEW in example 3 */
 
+"++"	{ 	return INCREMENT; } 		/* NEW in version 0.2 */
+"--"	{ 	return DECREMENT; } 		/* NEW in version 0.2 */
+
 "*"	    { return MULTIPLICATION; } 	/* NEW in example 3 */
 "/"     { return DIVISION; } 		/* NEW in example 3 */
+   /* "//"    { return COCIENTE_DIVISION_ENTERA; }  NEW in version 0.2 */
 
 "("     { return LPAREN; } 			/* NEW in example 3 */
 ")"	    { return RPAREN; } 			/* NEW in example 3 */
-
-
 
 "%"     { return MODULO; }			/* NEW in example 5 */
 

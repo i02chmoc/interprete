@@ -414,7 +414,33 @@ double lp::MinusNode::evaluateNumber()
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+/* NEW in version 0.2 */
 
+void lp::IncrementNode::print()
+{
+    std::cout << "IncrementNode: " << std::endl;
+    std::cout << "\t";
+    std::cout << "Increment: " << this->_inc << std::endl;
+    std::cout << "\t";
+    std::cout << "VariableNode: " << this->_id << std::endl;
+}
+
+double lp::IncrementNode::evaluateNumber()
+{
+    /* Get the identifier in the table of symbols as NumericVariable */
+    lp::NumericVariable *n = (lp::NumericVariable *)table.getSymbol(this->_id);
+
+    if (n->getType() != NUMBER)
+        execerror("Runtime error: the identifier is not a numeric variable for ", "Increment");
+
+    /* Assignment the read value to the identifier */
+    n->setValue(n->getValue() + this->_inc);
+
+    return n->getValue();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 void lp::MultiplicationNode::printAST() 
 {
   std::cout << "MultiplicationNode: *"  << std::endl;
@@ -1301,75 +1327,102 @@ void lp::EmptyStmt::evaluate()
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // NEW in example 17
-
-void lp::IfStmt::printAST() 
+/* MODIFIED in version 0.2 */
+void lp::IfStmtlist::printAST() 
 {
-  std::cout << "IfStmt: "  << std::endl;
+  std::cout << "IfStmtlist: "  << std::endl;
   // Condition
   std::cout << "\t";
   this->_cond->printAST();
 
   // Consequent
   std::cout << "\t";
-  this->_stmt1->printAST();
+  //this->_stmts1->printAST();
+  std::list<Statement *>::iterator stmtIter;
+  for (stmtIter = _stmts1->begin(); stmtIter != _stmts1->end(); stmtIter++) 
+  {
+     (*stmtIter)->printAST();
+  }
 
  // The alternative is printASTed if exists
-  if (this->_stmt2 != NULL)
+  if (this->_stmts2 != NULL)
      {  
        std::cout << "\t";
-	   this->_stmt2->printAST();
+	   //this->_stmts2->printAST();
+       for (stmtIter = _stmts2->begin(); stmtIter != _stmts2->end(); stmtIter++) 
+       {
+             (*stmtIter)->printAST();
+       }
      }
 
   std::cout << std::endl;
 }
 
-
-void lp::IfStmt::evaluate() 
+/* MODIFIED in version 0.2 */
+void lp::IfStmtlist::evaluate() 
 {
+   std::list<Statement *>::iterator stmtIter;
    // If the condition is true,
 	if (this->_cond->evaluateBool() == true )
-     // the consequent is run 
-	  this->_stmt1->evaluate();
-
+    {
+        // the consequent is run
+        // this->_stmts1->evaluate();
+        for (stmtIter = _stmts1->begin(); stmtIter != _stmts1->end(); stmtIter++) 
+        {
+           (*stmtIter)->evaluate();
+        }
+    }
+      
     // Otherwise, the alternative is run if exists
-	else if (this->_stmt2 != NULL)
-		  this->_stmt2->evaluate();
+	else if (this->_stmts2 != NULL)
+		//this->_stmts2->evaluate();
+        for (stmtIter = _stmts2->begin(); stmtIter != _stmts2->end(); stmtIter++) 
+        {
+           (*stmtIter)->evaluate();
+        }
 }
-
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // NEW in example 17
 
-void lp::WhileStmt::printAST() 
+/* MODIFIED in version 02 */
+void lp::WhileStmtlist::printAST() 
 {
-  std::cout << "WhileStmt: "  << std::endl;
+  std::cout << "WhileStmtlist: "  << std::endl;
   // Condition
   std::cout << "\t";
   this->_cond->printAST();
+  
 
   // Body of the while loop
   std::cout << "\t";
-  this->_stmt->printAST();
+  //this->_stmt->printAST();
+  std::list<Statement *>::iterator stmtIter;
+  for (stmtIter = _stmts->begin(); stmtIter != _stmts->end(); stmtIter++) 
+  {
+     (*stmtIter)->printAST();
+  }
 
   std::cout << std::endl;
 }
 
-
-void lp::WhileStmt::evaluate() 
+/* MODIFIED in version 02 */
+void lp::WhileStmtlist::evaluate() 
 {
   // While the condition is true. the body is run 
   while (this->_cond->evaluateBool() == true)
   {	
-	  this->_stmt->evaluate();
+	  //this->_stmt->evaluate();
+      std::list<Statement *>::iterator stmtIter;
+      for (stmtIter = _stmts->begin(); stmtIter != _stmts->end(); stmtIter++) 
+        {
+           (*stmtIter)->evaluate();
+        }
   }
 
 }
-
-
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
