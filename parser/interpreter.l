@@ -176,7 +176,7 @@ CADENA	"'"([^'\\]|"\\\'"|\\n|\\t)*"'"
 
 "=="	{ return EQUAL; }			/* NEW in example 15 */
 
-"!="	{ return NOT_EQUAL; }		/* NEW in example 15 */
+"<>"	{ return NOT_EQUAL; }		/* NEW in example 15 */
 
 ">="	{ return GREATER_OR_EQUAL; }/* NEW in example 15 */
 

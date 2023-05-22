@@ -1424,6 +1424,140 @@ void lp::WhileStmtlist::evaluate()
 
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+/* NEW in version 0.3 */
+
+void lp::RepeatStmtlist::printAST() 
+{
+  std::cout << "RepeatStmtlist: "  << std::endl;
+  
+  // Body of the repeat loop
+  std::cout << "\t";
+  //this->_stmt->printAST();
+  std::list<Statement *>::iterator stmtIter;
+  for (stmtIter = _stmts->begin(); stmtIter != _stmts->end(); stmtIter++) 
+  {
+     (*stmtIter)->printAST();
+  }
+
+  // Condition
+  std::cout << "\t";
+  this->_cond->printAST();
+
+  std::cout << std::endl;
+}
+
+void lp::RepeatStmtlist::evaluate() 
+{
+  // While the condition is true the body is run, except first time.
+  do
+  {	
+	  //this->_stmt->evaluate();
+      std::list<Statement *>::iterator stmtIter;
+      for (stmtIter = _stmts->begin(); stmtIter != _stmts->end(); stmtIter++) 
+        {
+           (*stmtIter)->evaluate();
+        }
+  } while (this->_cond->evaluateBool() == false);
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+/* NEW in version 0.3 */
+
+void lp::ForStmtlist::print()
+{
+    std::cout << "ForStmtlist: " << std::endl;
+    // Variable to initialize
+    std::cout << "\t";
+    std::cout << this->_id;
+
+    // Since expresion
+    std::cout << "\t";
+    this->_from->printAST();
+
+    // Until expresion
+    std::cout << "\t";
+    this->_to->printAST();
+
+    // Body statement
+    std::cout << "\t";
+    std::list<Statement *>::iterator stmtIter;
+    for (stmtIter = _stmts->begin(); stmtIter != _stmts->end(); stmtIter++) 
+    {
+       (*stmtIter)->printAST();
+    }
+    std::cout << std::endl;
+}
+
+void lp::ForStmtlist::evaluate()
+{
+    if (this->_from->getType() != NUMBER)
+        execerror("Runtime error", "Initial value it's not a number");
+
+    if (this->_to->getType() != NUMBER)
+        execerror("Runtime error", "Last value it's not a number");
+
+    if (this->_step != NULL && this->_step->getType() != NUMBER)
+        execerror("Runtime error", "Step value it's not a number");
+
+    if (this->_to->evaluateNumber() < this->_from->evaluateNumber())
+        execerror("Runtime error", "To must be higher than from");
+
+    lp::NumericVariable *n = new lp::NumericVariable();
+
+    // Check if Id exists in the table of symbols
+    if (table.lookupSymbol(this->_id) == false)
+        n = new lp::NumericVariable(this->_id, VARIABLE, NUMBER, this->_from->evaluateNumber());
+    else
+    {
+        lp::Variable *id = (lp::Variable *)table.getSymbol(this->_id);
+
+        if (id->getType() == NUMBER)
+        {
+            n = (lp::NumericVariable *)table.getSymbol(this->_id);
+        }
+        else
+        {
+            // Delete $1 from the table of symbols as Variable
+            table.eraseSymbol(this->_id);
+
+            // Insert $1 in the table of symbols as NUMBERVariable
+            // with the type NUMBER and the read value
+            n = new lp::NumericVariable(this->_id, VARIABLE, NUMBER);
+
+            table.installSymbol(n);
+        }
+
+        n->setValue(this->_from->evaluateNumber());
+    }
+
+    double step = 1.0;
+
+    if (this->_step != NULL and this->_step->evaluateNumber() <= ERROR_BOUND)
+    {
+        execerror("Runtime error", "Step has no increment, infinite loop");
+    }
+    else if (this->_step != NULL)
+    {
+        step = this->_step->evaluateNumber();
+    }
+        
+
+    for (; n->getValue() <= this->_to->evaluateNumber(); n->setValue(n->getValue() + step))
+    {
+        std::list<Statement *>::iterator stmtIter;
+        for (stmtIter = _stmts->begin(); stmtIter != _stmts->end(); stmtIter++) 
+        {
+           (*stmtIter)->evaluate();
+        }
+    }
+
+    /* table.eraseSymbol(this->_var); */
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////

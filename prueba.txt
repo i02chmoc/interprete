@@ -1,20 +1,9 @@
-read(dato);
+f := 0;
 
-print dato;
-
-if (dato < 0) 
-then
-    f := 0 ;
-    print f; 
-
-else
-     i := dato;
-     f := 2;
-     while(f>=20)
-     DO
-        f--;
-        f:= f - 2;
-     END_WHILE
-end_if
-
-print f+50; 
+for f
+    from 5
+    to 40
+    do 
+        f++;
+        print f;
+end_for

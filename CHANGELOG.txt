@@ -4,3 +4,7 @@ version 0.1
 version 0.2
     - implementación de stmtlist en IF, WHILE
     - increment, decrement
+
+version 0.3
+    - NOT_EQUAL símbolo corregido. Incorrecto en version 0.2
+    - FOR

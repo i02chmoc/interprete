@@ -1704,7 +1704,7 @@ class WhileStmtlist : public Statement
  private:
   ExpNode *_cond; //!< Condicion of the while statement
   //Statement *_stmt; //!< Statement of the body of the while loop
-  std::list<Statement *> *_stmts;
+  std::list<Statement *> *_stmts; //!< Statement of the body of the while loop
 
   public:
 /*!		
@@ -1735,7 +1735,96 @@ class WhileStmtlist : public Statement
   void evaluate();
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+// NEW in version 0.3
 
+/*!	
+  \class   RepeatStmt
+  \brief   Definition of atributes and methods of RepeatStmt class
+  \note    RepeatStmt Class publicly inherits from Statement class 
+		       and adds its own printAST and evaluate functions
+*/
+class RepeatStmtlist : public Statement 
+{
+ private:
+  ExpNode *_cond; //!< Condicion of the repeat statement
+  //Statement *_stmt; //!< Statement of the body of the while loop
+  std::list<Statement *> *_stmts; //!< Statement of the body of the repeat loop
+
+  public:
+/*!		
+	\brief Constructor of  WhileStmt
+	\param condition: ExpNode of the condition
+	\param statement: Statement of the body of the loop 
+	\post  A new WhileStmt is created with the parameters
+*/
+  RepeatStmtlist(std::list<Statement *> *statement, ExpNode *condition)
+	{
+		this->_cond = condition;
+		this->_stmts = statement;
+	}
+
+
+/*!
+	\brief   Print the AST for RepeatStmt
+	\return  void
+	\sa		   evaluate
+*/
+  void printAST();
+
+/*!	
+	\brief   Evaluate the RepeatStmt
+	\return  void
+	\sa	   	 printAST
+*/
+  void evaluate();
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+/* NEW in version 0.3 */
+
+    /*!
+      \class   ForStmtlist
+      \brief   Definition of atributes and methods of ForStmtlist class
+      \note    ForStmtlist Class publicly inherits from Statement class
+               and adds its own print and evaluate functions
+    */
+    class ForStmtlist : public Statement
+    {
+    private:
+        std::string _id;  //!< Name of the identifier
+        ExpNode *_from;   //!< From expresion of the for statement
+        ExpNode *_to;   //!< To expresion of the for statement
+        std::list<Statement *> *_stmts; //!< Block of Statements of the body of the for loop
+        ExpNode *_step;    //!< Step expresion of the for statement
+
+    public:
+
+        ForStmtlist(std::string id, ExpNode *from, ExpNode *to, std::list<Statement *> *stmtList, ExpNode *step = NULL)
+        {
+            this->_id = id;
+            this->_from = from;
+            this->_to = to;
+            this->_stmts = stmtList;
+            this->_step = step;
+        }
+
+        /*!
+            \brief   Print the ForStmtlist
+            \return  void
+            \sa		 evaluate()
+        */
+        void print();
+
+        /*!
+            \brief   Evaluate the ForStmtlist
+            \return  void
+            \sa		 print()
+        */
+        void evaluate();
+    };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////

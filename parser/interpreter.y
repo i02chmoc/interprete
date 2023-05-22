@@ -161,7 +161,8 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %type <stmts> stmtlist
 
 // New in example 17: if, while, block
-%type <st> stmt asgn print read if while block 
+/* MODIFIED in version 0.3 */
+%type <st> stmt asgn print read if while block repeat for
 
 %type <prog> program
 
@@ -336,6 +337,19 @@ stmt: SEMICOLON  /* Empty statement: ";" */
 		 // Default action
 		 // $$ = $1;
 	 }
+    /*  NEW in version 0.3 */
+    | repeat
+    {
+		 // Default action
+		 // $$ = $1;
+	 }
+    /*  NEW in version 0.3 */
+    | for
+    {
+		 // Default action
+		 // $$ = $1;
+	 }
+
 ;
 
 /* NEW in version 0.2 */
@@ -376,6 +390,7 @@ controlSymbol:  /* Epsilon rule*/
 	;
 
 	/*  NEW in example 17 */
+    /* MODIFIED in version 0.2 */
 if:	/* Simple conditional statement */
 	IF controlSymbol cond THEN stmtlist END_IF
     {
@@ -406,6 +421,38 @@ while:  WHILE controlSymbol cond DO stmtlist END_WHILE
 			// To control the interactive mode
 			control--;
     }
+;
+
+    /*  NEW in version 0.3 */
+repeat:  REPEAT controlSymbol stmtlist UNTIL cond SEMICOLON
+		{
+			// Create a new repeat statement node
+			$$ = new lp::RepeatStmtlist($3, $5);
+
+            // To control the interactive mode
+			control--;	
+    }
+;
+
+    /*  NEW in version 0.3 */
+for:	FOR controlSymbol VARIABLE FROM exp TO exp DO stmtlist END_FOR
+		{
+			// Create a new for statement node
+			$$ = new lp::ForStmtlist($3, $5, $7, $9);
+
+			// To control the interactive mode
+			control--;
+    	}
+
+	|	FOR controlSymbol VARIABLE FROM exp TO exp STEP exp DO stmtlist END_FOR
+		{
+			// Create a new for statement node
+			$$ = new lp::ForStmtlist($3, $5, $7, $11, $9);
+
+			// To control the interactive mode
+			control--;
+		}
+
 ;
 
 	/*  NEW in example 17 */
