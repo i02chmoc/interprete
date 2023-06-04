@@ -286,33 +286,33 @@ static void yy_fatal_error YY_PROTO(( yyconst char msg[] ));
 	*yy_cp = '\0'; \
 	yy_c_buf_p = yy_cp;
 
-#define YY_NUM_RULES 62
-#define YY_END_OF_BUFFER 63
+#define YY_NUM_RULES 63
+#define YY_END_OF_BUFFER 64
 static yyconst short int yy_accept[208] =
     {   0,
-        0,    0,    0,    0,   63,   59,    1,    2,   24,   15,
-       59,   59,   13,   14,   11,    8,    4,    7,   59,   12,
-        5,   59,    3,   23,   59,   22,   16,    6,    6,    6,
+        0,    0,    0,    0,   64,   60,    1,    2,   24,   15,
+       60,   60,   13,   14,   11,    8,    4,    7,   60,   12,
+        5,   29,    3,   23,   60,   22,   16,    6,    6,    6,
         6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
-        6,    6,    6,   27,   59,   28,   60,   61,   26,    0,
-       29,    0,    9,   10,    5,    5,    5,    0,   17,   21,
+        6,    6,    6,   27,   60,   28,   61,   62,   26,    0,
+       30,    0,    9,   10,    5,    5,    5,    0,   17,   21,
        19,   18,   20,    6,    0,    6,    6,    6,    6,    6,
         6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
         6,    6,    6,    6,    6,    6,    6,    6,   25,    5,
-        0,    5,    6,    6,    6,    6,    6,   44,    6,    6,
+        0,    5,    6,    6,    6,    6,    6,   45,    6,    6,
 
-        6,    6,    6,   39,    6,   30,    6,    6,    6,    6,
-        6,    6,   50,    6,    6,    6,    6,   31,    6,    6,
-        6,    6,    0,    6,   48,    6,   32,    6,    6,    6,
-        6,    6,    6,    6,    6,    6,    6,   53,    6,    6,
-       41,    6,    6,    6,    6,    6,   49,    6,    6,   35,
-        0,    6,   51,   40,   33,    6,    6,    6,    0,    6,
-        6,    6,    6,    6,   34,   58,   37,    0,    6,    6,
-       47,   54,   43,    6,    6,    6,    6,   42,    6,    6,
-        6,   46,    6,   55,    6,   52,    6,    6,    6,    6,
-       56,    6,    6,    6,    6,   45,    6,    6,    6,    6,
+        6,    6,    6,   40,    6,   31,    6,    6,    6,    6,
+        6,    6,   51,    6,    6,    6,    6,   32,    6,    6,
+        6,    6,    0,    6,   49,    6,   33,    6,    6,    6,
+        6,    6,    6,    6,    6,    6,    6,   54,    6,    6,
+       42,    6,    6,    6,    6,    6,   50,    6,    6,   36,
+        0,    6,   52,   41,   34,    6,    6,    6,    0,    6,
+        6,    6,    6,    6,   35,   59,   38,    0,    6,    6,
+       48,   55,   44,    6,    6,    6,    6,   43,    6,    6,
+        6,   47,    6,   56,    6,   53,    6,    6,    6,    6,
+       57,    6,    6,    6,    6,   46,    6,    6,    6,    6,
 
-        6,    6,    6,   36,   57,   38,    0
+        6,    6,    6,   37,   58,   39,    0
     } ;
 
 static yyconst int yy_ec[256] =
@@ -1049,11 +1049,16 @@ YY_RULE_SETUP
 #line 197 "interpreter.l"
 { return RIGHTCURLYBRACKET; }	/* NEW in example 17 */
 	YY_BREAK
-/* NEW in version 0.1 */
-/*! \name STRINGS */
 case 29:
 YY_RULE_SETUP
-#line 201 "interpreter.l"
+#line 199 "interpreter.l"
+{ return DOS_PUNTOS; }
+	YY_BREAK
+/* NEW in version 0.1 */
+/*! \name STRINGS */
+case 30:
+YY_RULE_SETUP
+#line 203 "interpreter.l"
 {	
 							memmove(yytext, yytext + 1, yyleng);
 							yytext[yyleng - 2] = '\0';
@@ -1064,154 +1069,154 @@ YY_RULE_SETUP
 	YY_BREAK
 /* NEW in version 0.1 */
 /*! \name RESERVED WORDS */
-case 30:
-YY_RULE_SETUP
-#line 211 "interpreter.l"
-{ return OR; }
-	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 212 "interpreter.l"
-{ return AND; }
+#line 213 "interpreter.l"
+{ return OR; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 213 "interpreter.l"
-{ return NOT; } 
+#line 214 "interpreter.l"
+{ return AND; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 215 "interpreter.l"
-{ yylval.logic = true; return BOOL; }
+{ return NOT; } 
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 216 "interpreter.l"
-{ yylval.logic = false; return BOOL; }
+#line 217 "interpreter.l"
+{ yylval.logic = true; return BOOL; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 218 "interpreter.l"
-{ return READ; }
+{ yylval.logic = false; return BOOL; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 219 "interpreter.l"
-{ return READ_STRING; }
+#line 220 "interpreter.l"
+{ return READ; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 220 "interpreter.l"
-{ return PRINT; }
+#line 221 "interpreter.l"
+{ return READ_STRING; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 221 "interpreter.l"
-{ return PRINT_STRING; }
+#line 222 "interpreter.l"
+{ return PRINT; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 223 "interpreter.l"
-{ return IF; }
+{ return PRINT_STRING; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 224 "interpreter.l"
-{ return THEN; }
+#line 225 "interpreter.l"
+{ return IF; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 225 "interpreter.l"
-{ return ELSE; }
+#line 226 "interpreter.l"
+{ return THEN; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 226 "interpreter.l"
-{ return END_IF; }
+#line 227 "interpreter.l"
+{ return ELSE; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 228 "interpreter.l"
-{ return WHILE; }
+{ return END_IF; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 229 "interpreter.l"
-{ return DO; }
+#line 230 "interpreter.l"
+{ return WHILE; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 230 "interpreter.l"
-{ return END_WHILE; }
+#line 231 "interpreter.l"
+{ return DO; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 232 "interpreter.l"
-{ return REPEAT; }
+{ return END_WHILE; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 233 "interpreter.l"
-{ return UNTIL; }
+#line 234 "interpreter.l"
+{ return REPEAT; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
 #line 235 "interpreter.l"
-{ return FOR; }
+{ return UNTIL; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 236 "interpreter.l"
-{ return FROM; }
+#line 237 "interpreter.l"
+{ return FOR; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 237 "interpreter.l"
-{ return TO; }
+#line 238 "interpreter.l"
+{ return FROM; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 238 "interpreter.l"
-{ return STEP; }
+#line 239 "interpreter.l"
+{ return TO; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 239 "interpreter.l"
-{ return END_FOR; }
+#line 240 "interpreter.l"
+{ return STEP; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 241 "interpreter.l"
-{ return CASE; }
+{ return END_FOR; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 242 "interpreter.l"
-{ return VALUE; }
+#line 243 "interpreter.l"
+{ return CASE; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 243 "interpreter.l"
-{ return DEFAULT ; }
+#line 244 "interpreter.l"
+{ return VALUE; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 244 "interpreter.l"
-{ return END_CASE; }
+#line 245 "interpreter.l"
+{ return DEFAULT ; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
 #line 246 "interpreter.l"
-{ return CLEAR_SCREEN_TOKEN; }
+{ return END_CASE; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 247 "interpreter.l"
+#line 248 "interpreter.l"
+{ return CLEAR_SCREEN_TOKEN; }
+	YY_BREAK
+case 59:
+YY_RULE_SETUP
+#line 249 "interpreter.l"
 { return PLACE; }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(ERROR):
-#line 250 "interpreter.l"
+#line 252 "interpreter.l"
 { /* The interpreter finishes when finds the end of file character */
 		/*  PLACE(24,10);
 	  	  std::cout <<  BICYAN;
@@ -1223,9 +1228,9 @@ case YY_STATE_EOF(ERROR):
 	  	  return 0;
 	}
 	YY_BREAK
-case 59:
+case 60:
 YY_RULE_SETUP
-#line 262 "interpreter.l"
+#line 264 "interpreter.l"
 { 	
 									/* Any other character */
 									/* MODIFIIED in example 3 */
@@ -1239,9 +1244,9 @@ YY_RULE_SETUP
 									yymore();  
 								}
 	YY_BREAK
-case 60:
+case 61:
 YY_RULE_SETUP
-#line 275 "interpreter.l"
+#line 277 "interpreter.l"
 { /* MODIFIED in examples 5, 7, 15 */
 								  /* NEW in example 3 */
 								  /* 
@@ -1251,9 +1256,9 @@ YY_RULE_SETUP
 									yymore(); 
 								}
 	YY_BREAK
-case 61:
+case 62:
 YY_RULE_SETUP
-#line 284 "interpreter.l"
+#line 286 "interpreter.l"
 { 
 								/* NEW in example 3 */
 								/* Rewind one position */
@@ -1266,12 +1271,12 @@ YY_RULE_SETUP
    								BEGIN(INITIAL);
 							}
 	YY_BREAK
-case 62:
+case 63:
 YY_RULE_SETUP
-#line 295 "interpreter.l"
+#line 297 "interpreter.l"
 ECHO;
 	YY_BREAK
-#line 1275 "lex.yy.c"
+#line 1280 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2159,6 +2164,6 @@ int main()
 	return 0;
 	}
 #endif
-#line 295 "interpreter.l"
+#line 297 "interpreter.l"
 
 

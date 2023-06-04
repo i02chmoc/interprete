@@ -8,3 +8,7 @@ version 0.2
 version 0.3
     - NOT_EQUAL símbolo corregido. Incorrecto en version 0.2
     - FOR
+
+version 0.4
+    - CASE implementado. No soporta cadenas.
+

@@ -196,6 +196,8 @@ CADENA	"'"([^'\\]|"\\\'"|\\n|\\t)*"'"
 
 "}"		{ return RIGHTCURLYBRACKET; }	/* NEW in example 17 */
 
+":"     { return DOS_PUNTOS; }
+
  /* NEW in version 0.1 */
  /*! \name STRINGS */
 {CADENA}				{	

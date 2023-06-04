@@ -1828,6 +1828,70 @@ class RepeatStmtlist : public Statement
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    /* NEW in version 0.4 */
+    /*!
+      \class   ValueNode
+      \brief   Definition of atributes and methods of ValueNode class
+    */
+
+    class ValueNode
+    {
+    public:
+        ExpNode *_exp; //!< Expression to evaluate in Case
+        std::list<Statement *> *_stmtList; //!< std::list<Statement*> List of expresions with the statements of the case
+
+    public:
+
+        ValueNode(ExpNode *expCase, std::list<Statement *> *stmtList) : _stmtList(stmtList)
+        {
+            this->_exp = expCase;
+        }
+
+        void print();
+
+        void evaluate();
+
+        int getType();
+
+        lp::ExpNode *getExp()
+        {
+            return this->_exp;
+        }
+    };
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+    /* NEW in version 0.4 */
+
+    /*!
+      \class   BlockCaseNode
+      \brief   Definition of atributes and methods of BlockCaseNode class
+    */
+    class BlockCaseNode : public Statement
+    {
+
+    private:
+        ExpNode *_exp;        
+        std::list<ValueNode *> *_values;
+        lp::ValueNode *_defaultValue;   
+
+    public:
+
+        BlockCaseNode(ExpNode *initialValue, std::list<lp::ValueNode *> *valuesList, lp::ValueNode *defaultValue = NULL) : _values(valuesList)
+        {
+            this->_exp = initialValue;
+            this->_defaultValue = defaultValue;
+        }
+
+        void print();
+
+        void evaluate();
+    };
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 // NEW in example 17
 
 /*!	

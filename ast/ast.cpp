@@ -1558,7 +1558,116 @@ void lp::ForStmtlist::evaluate()
 
     /* table.eraseSymbol(this->_var); */
 }
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+// NEW v. 0.0.5
 
+int lp::ValueNode::getType()
+{
+    return this->_exp->getType();
+}
+
+void lp::ValueNode::print()
+{
+    std::list<Statement *>::iterator itr;
+    std::cout << "ValueNode: " << std::endl;
+    std::cout << "\t";
+    for (itr = this->_stmtList->begin(); itr != this->_stmtList->end(); itr++)
+    {
+        (*itr)->printAST();
+    }
+    std::cout << std::endl;
+}
+
+void lp::ValueNode::evaluate()
+{
+    std::list<Statement *>::iterator itr;
+    for (itr = this->_stmtList->begin(); itr != this->_stmtList->end(); itr++)
+    {
+        (*itr)->evaluate();
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+// NEW v. 0.0.5
+
+void lp::BlockCaseNode::print()
+{
+    std::list<ValueNode *>::iterator itr;
+    std::cout << "CasesStmt: " << std::endl;
+    std::cout << "\t";
+    this->_exp->printAST();
+    std::cout << "\t";
+    for (itr = this->_values->begin(); itr != this->_values->end(); itr++)
+    {
+        (*itr)->print();
+    }
+    if (this->_defaultValue != NULL)
+    {
+        this->_defaultValue->print();
+    }
+    std::cout << std::endl;
+}
+
+void lp::BlockCaseNode::evaluate()
+{
+    int type = this->_exp->getType();
+    std::list<ValueNode *>::iterator caseIter;
+    bool enteredCase = false;
+
+    for (caseIter = this->_values->begin(); caseIter != this->_values->end() && !enteredCase; caseIter++)
+    {
+        if ((*caseIter)->getType() == type)
+        {
+            switch (type)
+            {
+            case NUMBER:
+            {
+                if ((*caseIter)->getExp()->evaluateNumber() == this->_exp->evaluateNumber())
+                {
+                    (*caseIter)->evaluate();
+                    enteredCase = true;
+                }
+            }
+            break;
+
+            case BOOL:
+            {
+                if ((*caseIter)->getExp()->evaluateBool() == this->_exp->evaluateBool())
+                {
+                    (*caseIter)->evaluate();
+                    enteredCase = true;
+                }
+            }
+            break;
+
+            /*case STRING:
+            {
+                if ((*caseIter)->getExp()->evaluateString() == this->_exp->evaluateString())
+                {
+                    (*caseIter)->evaluate();
+                    enteredCase = true;
+                }
+            }*/
+            break;
+
+            default:
+                warning("Runtime error: incompatible types for ", "valor");
+            }
+        }
+
+        else
+        {
+            warning("Runtime error: incompatible types for ", "valor");
+        }
+    }
+
+    if (!enteredCase && this->_defaultValue != NULL)
+    {
+        this->_defaultValue->evaluate();
+    }
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // NEW in example 17

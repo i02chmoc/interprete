@@ -149,6 +149,9 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
   lp::AST *prog;					 /* NEW in example 16 */
   char * identifier; 			/* NEW in version 0.1 */
   lp::OperatorAssignmentNode *opAssignNode; 			/* New in version 0.2 */
+  std::list<lp::ValueNode *> *values;  					/* NEW in v. 0.0.5 */  
+  lp::ValueNode *individualValue;							/* New in v. 0.0.5 */
+  lp::BlockCaseNode *blockCase; 					/* NEW in v. 0.0.5 */
 }
 
 /* Type of the non-terminal symbols */
@@ -160,10 +163,18 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 
 %type <stmts> stmtlist
 
+// New in v. 0.0.4 
+%type <values> valuelist
+
+// NEW in v. 0.0.5
+%type <individualValue> value defaultvalue
+ 
+// NEW in v. 0.0.5
+%type <blockCase> case
+
 // New in example 17: if, while, block
 /* MODIFIED in version 0.3 */
 %type <st> stmt asgn print read if while block repeat for
-
 %type <prog> program
 
 /* Defined tokens */
@@ -185,7 +196,8 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %right ASSIGNMENT
 
 /* NEW in example 14 */
-%token COMMA
+/* MODIFIED in version 0.4 */
+%token COMMA DOS_PUNTOS
 
 %type <opAssignNode> inc /* NEW in version 0.2 */
 
@@ -349,6 +361,12 @@ stmt: SEMICOLON  /* Empty statement: ";" */
 		 // Default action
 		 // $$ = $1;
 	 }
+/*  NEW in version 0.4 */
+    | case
+    {
+		 // Default action
+		 // $$ = $1;
+	 }
 
 ;
 
@@ -453,6 +471,65 @@ for:	FOR controlSymbol VARIABLE FROM exp TO exp DO stmtlist END_FOR
 			control--;
 		}
 
+;
+
+/*  NEW in v. 0.0.4 */
+case: CASE controlSymbol LPAREN exp RPAREN valuelist END_CASE
+	{	
+		// Create a new do statement node
+		$$ = new lp::BlockCaseNode($4, $6);
+
+		// To control the interactive mode
+		control--;
+	}
+
+	| CASE controlSymbol LPAREN exp RPAREN valuelist defaultvalue END_CASE
+	{	
+		// Create a new do statement node
+		$$ = new lp::BlockCaseNode($4, $6, $7);
+		
+		// To control the interactive mode
+		control--;
+	}
+;
+
+/* New in v 0.0.5 */
+valuelist:  /* empty: epsilon rule */
+		  { 
+			$$ = new std::list<lp::ValueNode *>(); 
+		  }  
+
+        | valuelist value
+		  { 
+			$$ = $1;
+			$$->push_back($2);
+		}
+; 
+
+/* New in v 0.0.5 */
+value: VALUE NUMBER DOS_PUNTOS stmtlist 
+	  {	
+		  	lp::ExpNode * exp = new lp::NumberNode($2);
+			$$ = new lp::ValueNode(exp, $4);
+	  }	
+	| VALUE CONSTANT DOS_PUNTOS stmtlist
+	  {
+		  	lp::ExpNode * exp = new lp::ConstantNode($2);
+			$$ = new lp::ValueNode(exp, $4);
+	  }	
+	/*| CASE STRING DOS_PUNTOS stmtlist
+	  {
+			lp::ExpNode * exp = new lp::StringNode($2);
+			$$ = new lp::CaseNode(exp, $4);
+	  }	*/
+;
+
+/* New in v 0.0.5 */
+defaultvalue: DEFAULT DOS_PUNTOS stmtlist
+			{
+				// Create a new case node
+				$$ = new lp::ValueNode(NULL, $3);
+			}
 ;
 
 	/*  NEW in example 17 */

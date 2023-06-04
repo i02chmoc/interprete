@@ -155,7 +155,7 @@ SENTENCIAS DE CONTROL:					[ ]
 		write								[ ]
 		write_string						[ ]
 
-	SENTENCIAS DE CONTROL						[ ]
+	SENTENCIAS DE CONTROL						[x]
 		CONDICIONAL SIMPLE					[x]
 			if condición
 				then lista de sentencias
@@ -172,12 +172,12 @@ SENTENCIAS DE CONTROL:					[ ]
 					lista de sentencias
 			end_while
 
-		BUCLE "repeat"						[ ]
+		BUCLE "repeat"						[x]
 			repeat
 				lista de sentencias
 			until condición
 
-		BUCLE "for"							[ ]
+		BUCLE "for"							[x]
 			for identificador
 				from expresión numérica 1
 				to expresión numérica 2
@@ -186,7 +186,7 @@ SENTENCIAS DE CONTROL:					[ ]
 					lista de sentencias
 			end_for
 
-		SELECCIÓN MÚLTIPLE					[ ]
+		SELECCIÓN MÚLTIPLE					[x]
 		case (expresión)
 			value v1:   … 
 			value v2:   … 
@@ -246,7 +246,7 @@ MODOS DE EJECUCIÓN:							[ ]
 -------------------------------------------------------------------------------------
 OPCIONALES:									[ ]	
 -------------------------------------------------------------------------------------
-	OPERADORES UNARIOS (++, --, etc.)			[ ]
+	OPERADORES UNARIOS (++, --, etc.)			[x]
 	OPERADORES ARITMÉTICOS Y ASIGNACIÓN (+:=,-:=)	[ ]
 	OTROS: (ejemplo: do ... while)				[ ]
 
