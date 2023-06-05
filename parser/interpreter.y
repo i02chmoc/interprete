@@ -139,6 +139,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 /* Data type YYSTYPE  */
 /* NEW in example 4 */
 %union {
+char * variable; 			/* NEW in version 0.1 */
   double number;
   char * string; 				 /* NEW in example 7 */
   bool logic;						 /* NEW in example 15 */
@@ -147,7 +148,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
   std::list<lp::Statement *> *stmts; /* NEW in example 16 */
   lp::Statement *st;				 /* NEW in example 16 */
   lp::AST *prog;					 /* NEW in example 16 */
-  char * identifier; 			/* NEW in version 0.1 */
+  
   lp::OperatorAssignmentNode *opAssignNode; 			/* New in version 0.2 */
   std::list<lp::ValueNode *> *values;  					/* NEW in v. 0.0.5 */  
   lp::ValueNode *individualValue;							/* New in v. 0.0.5 */
@@ -174,7 +175,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 
 // New in example 17: if, while, block
 /* MODIFIED in version 0.3 */
-%type <st> stmt asgn print read if while block repeat for
+%type <st> stmt asgn print read if while block repeat for clear_screen place print_string read_string
 %type <prog> program
 
 /* Defined tokens */
@@ -202,7 +203,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %type <opAssignNode> inc /* NEW in version 0.2 */
 
 /* NEW in version 0.1 */
-%token PRINT_STRING READ_STRING THEN END_IF DO END_WHILE REPEAT UNTIL FOR FROM TO STEP END_FOR  CASE VALUE DEFAULT END_CASE CLEAR_SCREEN_TOKEN PLACE
+%token PRINT_STRING READ_STRING THEN END_IF DO END_WHILE REPEAT UNTIL FOR FROM TO STEP END_FOR CASE VALUE DEFAULT END_CASE CLEAR_SCREEN_TOKEN PLACE
 %token <string> STRING
 
 /*******************************************/
@@ -216,7 +217,7 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 /*******************************************/
 
 /* MODIFIED in examples 11, 13 */
-%token <string> VARIABLE UNDEFINED CONSTANT BUILTIN
+%token <variable> VARIABLE UNDEFINED CONSTANT BUILTIN
 
 /* Left associativity */
 
@@ -235,12 +236,18 @@ extern lp::AST *root; //!< External root of the abstract syntax tree AST
 %left PLUS MINUS 
 
 /* MODIFIED in example 5 */
-%left MULTIPLICATION DIVISION MODULO
+%left MULTIPLICATION DIVISION MODULO PLUS_ASSIGN MINUS_ASSIGN COCIENTE_DIVISION_ENTERA
 
 %left LPAREN RPAREN
 
+/* NEW in version 0.6 */
+%left COMILLAS
+
+/* NEW in version 0.6 */
+%left CONCATENATION
+
 /* MODIFIED in version 0.2 */
-%nonassoc  UNARY INCREMENT DECREMENT
+%nonassoc  UNARY INCREMENT DECREMENT 
 
 // Maximum precedence 
 /* MODIFIED in example 5 */
@@ -361,14 +368,58 @@ stmt: SEMICOLON  /* Empty statement: ";" */
 		 // Default action
 		 // $$ = $1;
 	 }
-/*  NEW in version 0.4 */
+    /*  NEW in version 0.4 */
     | case
     {
 		 // Default action
 		 // $$ = $1;
 	 }
+    /*  NEW in version 0.5 */
+    | clear_screen
+    {
+		 // Default action
+		 // $$ = $1;
+	 }
+    /*  NEW in version 0.5 */
+    | place
+	 {
+		 // Default action
+		 // $$ = $1;
+	 }
+    /*  NEW in version 0.6 */
+    | print_string SEMICOLON
+	    {
+			// Default action
+			// $$ = $1;
+		}
+    /*  NEW in version 0.6 */
+    | read_string SEMICOLON
+	    {
+			// Default action
+			// $$ = $1;
+		}
 
 ;
+
+/* NEW in version 0.6 */
+print_string: PRINT_STRING exp 
+			   {	
+				   // Create a new print node
+			 		$$ = new lp::PrintStringStmt($2);
+			   }
+;
+/* NEW in version 0.6 */
+read_string: READ_STRING LPAREN VARIABLE RPAREN // NEW in version 0.6
+				{
+					// Create a new read_string node
+					$$ = new lp::ReadStringStmt($3);
+				}
+			| READ_STRING LPAREN CONSTANT RPAREN // NEW in version 0.6
+				{
+					execerror("Semantic error in \"read_string statement\": it is not allowed to modify a constant ",$3);
+				}
+;
+
 
 /* NEW in version 0.2 */
 inc :  	VARIABLE INCREMENT
@@ -390,6 +441,18 @@ inc :  	VARIABLE INCREMENT
       	{
 			// Create a new IncrementNode
 			$$ = new lp::IncrementNode($2, -1);
+		}
+    /* NEW in version 0.5 */ 
+    | VARIABLE PLUS_ASSIGN exp 
+		{ 
+			// Create a new assignment node
+			$$ = new lp::IncrementNode($1, $3, 1);
+		}
+    /* NEW in version 0.5 */ 
+	|  VARIABLE MINUS_ASSIGN exp 
+		{ 
+			// Create a new assignment node
+			$$ = new lp::IncrementNode($1, $3, -1);
 		}
 ;
 
@@ -473,7 +536,7 @@ for:	FOR controlSymbol VARIABLE FROM exp TO exp DO stmtlist END_FOR
 
 ;
 
-/*  NEW in v. 0.0.4 */
+/*  NEW in version 0.4 */
 case: CASE controlSymbol LPAREN exp RPAREN valuelist END_CASE
 	{	
 		// Create a new do statement node
@@ -493,7 +556,7 @@ case: CASE controlSymbol LPAREN exp RPAREN valuelist END_CASE
 	}
 ;
 
-/* New in v 0.0.5 */
+/* New in version 0.4 */
 valuelist:  /* empty: epsilon rule */
 		  { 
 			$$ = new std::list<lp::ValueNode *>(); 
@@ -506,7 +569,7 @@ valuelist:  /* empty: epsilon rule */
 		}
 ; 
 
-/* New in v 0.0.5 */
+/* New in version 0.4 */
 value: VALUE NUMBER DOS_PUNTOS stmtlist 
 	  {	
 		  	lp::ExpNode * exp = new lp::NumberNode($2);
@@ -524,7 +587,7 @@ value: VALUE NUMBER DOS_PUNTOS stmtlist
 	  }	*/
 ;
 
-/* New in v 0.0.5 */
+/* New in version 0.4 */
 defaultvalue: DEFAULT DOS_PUNTOS stmtlist
 			{
 				// Create a new case node
@@ -539,19 +602,31 @@ cond: 	LPAREN exp RPAREN
 		}
 ;
 
+/* New in version 0.5 */
+clear_screen: CLEAR_SCREEN_TOKEN
+				{
+					// Create a new ClearScreenStmt
+					$$ = new lp::ClearScreenStmt();
+				}
+;
+
+/* New in v 0.5 */
+place: PLACE LPAREN exp COMMA exp RPAREN
+		{
+			$$ = new lp::PlaceStmt($3, $5);
+		}
+;
 
 asgn:   VARIABLE ASSIGNMENT exp 
 		{ 
 			// Create a new assignment node
 			$$ = new lp::AssignmentStmt($1, $3);
 		}
-
-	|  VARIABLE ASSIGNMENT asgn 
+	| VARIABLE ASSIGNMENT asgn 
 		{ 
 			// Create a new assignment node
 			$$ = new lp::AssignmentStmt($1, (lp::AssignmentStmt *) $3);
 		}
-
 	   /* NEW in example 11 */ 
 	| CONSTANT ASSIGNMENT exp 
 		{   
@@ -590,6 +665,12 @@ exp:	NUMBER
 			// Create a new number node
 			$$ = new lp::NumberNode($1);
 		}
+    /* NEW in version 0.6 */
+    |   STRING
+		{ 
+			// Create a new String node
+			$$ = new lp::StringNode($1);
+		}
 
 	| 	exp PLUS exp 
 		{ 
@@ -613,6 +694,13 @@ exp:	NUMBER
 		{
 		  // Create a new division node	
 		  $$ = new lp::DivisionNode($1, $3);
+	   }
+
+    /* NEW in version 0.5 */
+    | 	exp COCIENTE_DIVISION_ENTERA exp
+		{
+		  // Create a new division entera node	
+		  $$ = new lp::DivisionEnteraNode($1, $3);
 	   }
 
 	| 	LPAREN exp RPAREN
@@ -759,6 +847,14 @@ exp:	NUMBER
 		  // Create a new "logic negation" node	
  			$$ = new lp::NotNode($2);
 		}
+    /*  NEW in version 0.6 */
+    | exp CONCATENATION exp
+		{
+			// Create a new "concatenation" node
+			$$ = new lp::ConcatenationNode($1,$3);
+		
+		}
+
 ;
 
 

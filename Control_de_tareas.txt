@@ -110,7 +110,7 @@ OPERADORES:								[ ]
 			BINARIO 2-3				[x]
 		PRODUCTO *					[x]
 		DIVISION /					[x]
-		COCIENTE_DIVISION_ENTERA //	[ ]
+		COCIENTE_DIVISION_ENTERA //	[x]
 		MODULO %					[x]
 		POTENCIA ^					[x]
 
@@ -124,10 +124,10 @@ OPERADORES:								[ ]
 		MAYOR O IGUAL QUE >=		[x]
 		DISTINTO DE <>				[x]
 
-	LÓGICOS								[ ]
-		DISYUNCIÓN or				[ ]
-		CONJUNCIÓN and				[ ]
-		NEGACIÓN   not				[ ]
+	LÓGICOS								[x]
+		DISYUNCIÓN or				[x]
+		CONJUNCIÓN and				[x]
+		NEGACIÓN   not				[x]
 
 										CONTROL		FECHA
 -------------------------------------------------------------------------------------
@@ -137,15 +137,15 @@ OTROS:									[ ]
 		VARIAS LINEAS: DELIMITADORES << ... >> 		[ ]
 		UNA LÍNEA: DELIMITADOR #		  [ ]
 
-	FIN DE LINEA ;							[ ]
+	FIN DE LINEA ;							[x]
 
 										CONTROL		FECHA
 -------------------------------------------------------------------------------------
 SENTENCIAS DE CONTROL:					[ ]						
 -------------------------------------------------------------------------------------
-	ASIGNACIÓN									[ ]
-		IDENTIFICADOR := EXPR NUMÉRICA		[ ]
-		IDENTIFICADOR := EXPR ALFANUMÉRICA	[ ]
+	ASIGNACIÓN									[x]
+		IDENTIFICADOR := EXPR NUMÉRICA		[x]
+		IDENTIFICADOR := EXPR ALFANUMÉRICA	[x]
 
 	LECTURA										[ ]
 		read(identificador)					[ ]
@@ -196,10 +196,10 @@ SENTENCIAS DE CONTROL:					[ ]
 
 													CONTROL		FECHA
 -------------------------------------------------------------------------------------
-COMANDOS ESPECIALES:								[ ]	
+COMANDOS ESPECIALES:								[x]	
 --------------------------------------------------------------------------------------
-	clear_screan										[ ]
-	place(expresión numérica 1, expresión numérica 2)	[ ]
+	clear_screan										[x]
+	place(expresión numérica 1, expresión numérica 2)	[x]
 
 
 												CONTROL		FECHA
@@ -236,10 +236,10 @@ DE EJECUCIÓN									[ ]
 
 											CONTROL		FECHA
 -------------------------------------------------------------------------------------
-MODOS DE EJECUCIÓN:							[ ]	
+MODOS DE EJECUCIÓN:							[x]	
 -----------------------------------------------------------------------------------
-	INTERACTIVO							[ ]
-	DESDE FICHERO						[ ]
+	INTERACTIVO							[x]
+	DESDE FICHERO						[x]
 
 
 											CONTROL		FECHA
@@ -247,6 +247,6 @@ MODOS DE EJECUCIÓN:							[ ]
 OPCIONALES:									[ ]	
 -------------------------------------------------------------------------------------
 	OPERADORES UNARIOS (++, --, etc.)			[x]
-	OPERADORES ARITMÉTICOS Y ASIGNACIÓN (+:=,-:=)	[ ]
+	OPERADORES ARITMÉTICOS Y ASIGNACIÓN (+:=,-:=)	[x]
 	OTROS: (ejemplo: do ... while)				[ ]
 

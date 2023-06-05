@@ -100,12 +100,17 @@ extern int yydebug;
     MULTIPLICATION = 306,
     DIVISION = 307,
     MODULO = 308,
-    LPAREN = 309,
-    RPAREN = 310,
-    UNARY = 311,
-    INCREMENT = 312,
-    DECREMENT = 313,
-    POWER = 314
+    PLUS_ASSIGN = 309,
+    MINUS_ASSIGN = 310,
+    COCIENTE_DIVISION_ENTERA = 311,
+    LPAREN = 312,
+    RPAREN = 313,
+    COMILLAS = 314,
+    CONCATENATION = 315,
+    UNARY = 316,
+    INCREMENT = 317,
+    DECREMENT = 318,
+    POWER = 319
   };
 #endif
 
@@ -115,6 +120,7 @@ union YYSTYPE
 {
 #line 141 "interpreter.y"
 
+char * variable; 			/* NEW in version 0.1 */
   double number;
   char * string; 				 /* NEW in example 7 */
   bool logic;						 /* NEW in example 15 */
@@ -123,13 +129,13 @@ union YYSTYPE
   std::list<lp::Statement *> *stmts; /* NEW in example 16 */
   lp::Statement *st;				 /* NEW in example 16 */
   lp::AST *prog;					 /* NEW in example 16 */
-  char * identifier; 			/* NEW in version 0.1 */
+  
   lp::OperatorAssignmentNode *opAssignNode; 			/* New in version 0.2 */
   std::list<lp::ValueNode *> *values;  					/* NEW in v. 0.0.5 */  
   lp::ValueNode *individualValue;							/* New in v. 0.0.5 */
   lp::BlockCaseNode *blockCase; 					/* NEW in v. 0.0.5 */
 
-#line 133 "interpreter.tab.h"
+#line 139 "interpreter.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

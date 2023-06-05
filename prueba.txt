@@ -1,9 +1,3 @@
-a := 2;
-case ( a )
-value 1:
-    a := a + 10;
-    print(a);
-value 2:
-    a ++;
-    print(a);
-END_CASE
+a := "prueba";
+print_string("asdfasdafsdafsdafsd\n");
+print_string(a);

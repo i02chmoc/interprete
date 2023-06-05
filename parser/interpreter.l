@@ -67,8 +67,12 @@ NUMBER3	{DIGIT}+(\.{DIGIT}+)?((e|E)[+\-]?{DIGIT}+)?
  /* NEW in version 0.1 */
 IDENTIFIER  {LETTER}({LETTER}|{DIGIT}|_({LETTER}|{DIGIT}))* 
 
- /* NEW in version 0.1 */
-CADENA	"'"([^'\\]|"\\\'"|\\n|\\t)*"'"
+ /* NEW in version 0.6 */
+CADENA1	"'"([^'])*"'"
+CADENA2	\"[^"]*\"
+
+ /* NEW in version 0.5 */
+SEPARADOR [ \t\n;]
 
 /* NEW in example 3 */
 /* STATE  */
@@ -108,10 +112,20 @@ CADENA	"'"([^'\\]|"\\\'"|\\n|\\t)*"'"
                        return NUMBER; 
                       }
 
+ /* NEW in version 0.6 */
+ /*! \name STRINGS */
+{CADENA1}|{CADENA2}			{	
+							memmove(yytext, yytext + 1, yyleng);
+							yytext[yyleng - 2] = '\0';
+
+							yylval.variable =  strdup(yytext); 
+							return STRING;
+						}	
+
 
 {IDENTIFIER}   		 {
 						 /* NEW in example 7 */
-						 std::string identifier(yytext);
+						 std::string variable(yytext);
 
 						/* 
                           strdup() function returns a pointer to a new string 
@@ -120,13 +134,13 @@ CADENA	"'"([^'\\]|"\\\'"|\\n|\\t)*"'"
 						  yylval.string =  strdup(yytext);
 
 						/* If the identifier is not in the table of symbols then it is inserted */	
-						 if (table.lookupSymbol(identifier) == false)
+						 if (table.lookupSymbol(variable) == false)
 							{
 								/* 
 								 The identifier is inserted into the symbol table 
 								 as undefined Variable with value 0.0
 								*/
-								lp::NumericVariable *n = new lp::NumericVariable(identifier,VARIABLE,UNDEFINED,0.0);
+								lp::NumericVariable *n = new lp::NumericVariable(variable,VARIABLE,UNDEFINED,0.0);
 
 								/* A pointer to the new NumericVariable is inserted into the table of symbols */
 								table.installSymbol(n);
@@ -141,7 +155,7 @@ CADENA	"'"([^'\\]|"\\\'"|\\n|\\t)*"'"
 						*/
 						else 
 							{
-								lp::Symbol	*s = table.getSymbol(identifier);
+								lp::Symbol	*s = table.getSymbol(variable);
 
 /*
 								std::cout << "lex: "<< s->getName() 
@@ -156,97 +170,80 @@ CADENA	"'"([^'\\]|"\\\'"|\\n|\\t)*"'"
 
 "-"		{ return MINUS;  } 			/* NEW in example 3 */
 "+"		{ return PLUS;   } 			/* NEW in example 3 */
-
 "++"	{ 	return INCREMENT; } 		/* NEW in version 0.2 */
 "--"	{ 	return DECREMENT; } 		/* NEW in version 0.2 */
+"+:="					{ 	return PLUS_ASSIGN;  } 	    /* New in version 0.5 */
+"-:="					{ 	return MINUS_ASSIGN; } 	    /* New in version 0.5 */
 
 "*"	    { return MULTIPLICATION; } 	/* NEW in example 3 */
 "/"     { return DIVISION; } 		/* NEW in example 3 */
-   /* "//"    { return COCIENTE_DIVISION_ENTERA; }  NEW in version 0.2 */
+"//"    { return COCIENTE_DIVISION_ENTERA; } /* NEW in version 0.5 */
 
 "("     { return LPAREN; } 			/* NEW in example 3 */
 ")"	    { return RPAREN; } 			/* NEW in example 3 */
 
 "%"     { return MODULO; }			/* NEW in example 5 */
-
 "^"	    { return POWER; }			/* NEW in example 5 */
-
 ":=" 	{ return ASSIGNMENT; }		/* NEW in version 0.1 */
 
 
 "=="	{ return EQUAL; }			/* NEW in example 15 */
-
 "<>"	{ return NOT_EQUAL; }		/* NEW in example 15 */
-
 ">="	{ return GREATER_OR_EQUAL; }/* NEW in example 15 */
-
 "<="	{ return LESS_OR_EQUAL; }	/* NEW in example 15 */
-
 ">"		{ return GREATER_THAN; }	/* NEW in example 15 */
-
 "<"		{ return LESS_THAN; }		/* NEW in example 15 */
 
-"!"		{ return NOT; }				/* NEW in example 15 */
-
-"||"	{ return OR; }				/* NEW in example 15 */
-
-"&&"	{ return AND; }				/* NEW in example 15 */
+"not"		{ return NOT; }				/* NEW in example 15 */
+"or"	{ return OR; }				/* NEW in example 15 */
+"and"	{ return AND; }				/* NEW in example 15 */
 
 "{"		{ return LETFCURLYBRACKET; } 	/* NEW in example 17 */
-
 "}"		{ return RIGHTCURLYBRACKET; }	/* NEW in example 17 */
-
 ":"     { return DOS_PUNTOS; }
+['"]		{ return COMILLAS;  } 			/* NEW in example 3 */
 
- /* NEW in version 0.1 */
- /*! \name STRINGS */
-{CADENA}				{	
-							memmove(yytext, yytext + 1, yyleng);
-							yytext[yyleng - 2] = '\0';
-
-							yylval.identifier =  strdup(yytext); 
-							return STRING;
-						}	
+"||"    { return CONCATENATION;  } 			/* NEW in version 0.6 */
 
  /* NEW in version 0.1 */
  /*! \name RESERVED WORDS */
-"or"[ \t\n] { return OR; }
-"and"[ \t\n] { return AND; }
-"not"[ \t\n]	{ return NOT; } 
+{SEPARADOR}"or" { return OR; }
+{SEPARADOR}"and" { return AND; }
+{SEPARADOR}"not"	{ return NOT; } 
 
-"true"[ \t\n] { yylval.logic = true; return BOOL; }
-"false"[ \t\n] { yylval.logic = false; return BOOL; }
+{SEPARADOR}"true" { yylval.logic = true; return BOOL; }
+{SEPARADOR}"false" { yylval.logic = false; return BOOL; }
 
-"read"[ \t\n] { return READ; }
-"read_string"[ \t\n] { return READ_STRING; }
-"print"[ \t\n] { return PRINT; }
-"print_string"[ \t\n] { return PRINT_STRING; }
+{SEPARADOR}"read" { return READ; }
+{SEPARADOR}"read_string" { return READ_STRING; }
+{SEPARADOR}"print" { return PRINT; }
+{SEPARADOR}"print_string" { return PRINT_STRING; }
 
-"if"[ \t\n] { return IF; }
-"then"[ \t\n] { return THEN; }
-"else"[ \t\n] { return ELSE; }
-"end_if"[ \t\n] { return END_IF; }
+{SEPARADOR}"if" { return IF; }
+{SEPARADOR}"then" { return THEN; }
+{SEPARADOR}"else" { return ELSE; }
+{SEPARADOR}"end_if" { return END_IF; }
 
-"while"[ \t\n] { return WHILE; }
-"do"[ \t\n] { return DO; }
-"end_while"[ \t\n] { return END_WHILE; }
+{SEPARADOR}"while" { return WHILE; }
+{SEPARADOR}"do" { return DO; }
+{SEPARADOR}"end_while" { return END_WHILE; }
 
-"repeat"[ \t\n] { return REPEAT; }
-"until"[ \t\n] { return UNTIL; }
+{SEPARADOR}"repeat" { return REPEAT; }
+{SEPARADOR}"until" { return UNTIL; }
 
-"for"[ \t\n] { return FOR; }
-"from"[ \t\n] { return FROM; }
-"to"[ \t\n] { return TO; }
-"step"[ \t\n] { return STEP; }
-"end_for"[ \t\n] { return END_FOR; }
+{SEPARADOR}"for" { return FOR; }
+{SEPARADOR}"from" { return FROM; }
+{SEPARADOR}"to" { return TO; }
+{SEPARADOR}"step" { return STEP; }
+{SEPARADOR}"end_for" { return END_FOR; }
 
-"case"[ \t\n] { return CASE; }
-"value"[ \t\n] { return VALUE; }
-"default"[ \t\n] { return DEFAULT ; }
-"end_case"[ \t\n] { return END_CASE; }
+{SEPARADOR}"case" { return CASE; }
+{SEPARADOR}"value" { return VALUE; }
+{SEPARADOR}"default" { return DEFAULT ; }
+{SEPARADOR}"end_case" { return END_CASE; }
 
-"clear_screen"[ \t\n] { return CLEAR_SCREEN_TOKEN; }
-"place"[ \t\n] { return PLACE; }
+{SEPARADOR}"clear_screen" { return CLEAR_SCREEN_TOKEN; }
+{SEPARADOR}"place" { return PLACE; }
 
 
 <<EOF>> { /* The interpreter finishes when finds the end of file character */

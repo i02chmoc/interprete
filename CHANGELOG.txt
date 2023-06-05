@@ -12,3 +12,12 @@ version 0.3
 version 0.4
     - CASE implementado. No soporta cadenas.
 
+version 0.5
+    - Place, Clear_screen
+    - DivisionEntera
+
+veersion 0.6
+    - Asginar cadenas a variables
+    - stringVariable.hpp/.cpp/.o creadas y añadidos al makefile de table
+    - Concatenación > class ConcatenationNode : public StringOperatorNode > class StringOperatorNode : public OperatorNode
+

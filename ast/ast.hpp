@@ -69,6 +69,18 @@ namespace lp
 		return false;
 	}
 
+    /* NEW in version 0.6 */
+        /*!
+            \brief   Evaluate the expression as STRING
+            \warning Virtual function: could be redefined in the heir classes
+            \return  String
+            \sa		 evaluateArray()
+        */
+        virtual std::string evaluateString() 
+        {
+            return "";
+        }
+
 };
 
 
@@ -126,6 +138,13 @@ class VariableNode : public ExpNode
 	*/
 	  bool evaluateBool();
 
+    /*!	
+		\brief   Evaluate the Variable as STRING
+		\return  string
+		\sa		   getType, printAST, evaluateNumber
+	*/
+	  std::string evaluateString();
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -180,6 +199,7 @@ class ConstantNode : public ExpNode
 		\sa		   getType, printAST, evaluateNumber, evaluateBool
 	*/
 	  bool evaluateBool();
+
 };
 
 
@@ -710,6 +730,42 @@ class DivisionNode : public NumericOperatorNode
   double evaluateNumber();
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+/*!	
+  \class   DivisionEnteraNode
+  \brief   Definition of atributes and methods of DivisionEnteraNode class
+  \note    DivisionEnteraNode Class publicly inherits from NumericOperatorNode class 
+		   and adds its own printAST and evaluate functions
+*/
+class DivisionEnteraNode : public NumericOperatorNode 
+{
+  public:
+/*!		
+	\brief Constructor of DivisionEnteraNode uses NumericOperatorNode's constructor as members initializer
+	\param L: pointer to ExpNode
+	\param R: pointer to ExpNode
+	\post  A new DivisionEnteraNode is created with the parameter
+*/
+  DivisionEnteraNode(ExpNode *L, ExpNode *R): NumericOperatorNode(L,R) 
+  {
+		// Empty
+  }
+/*!
+	\brief   printAST the DivisionNode
+	\return  void
+	\sa		   evaluateNumber
+*/
+  void printAST();
+
+/*!	
+	\brief   Evaluate the DivisionNode
+	\return  double
+	\sa		   printAST
+*/
+  double evaluateNumber();
+};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1535,7 +1591,46 @@ class PrintStmt: public Statement
   void evaluate();
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+/* NEW in version 0.6 */
+    /*!
+      \class   PrintStringStmt
+      \brief   Definition of atributes and methods of PrintStringStmt class
+      \note    PrintStringStmt Class publicly inherits from Statement class
+               and adds its own print and evaluate functions
+      \warning  In this class, print and evaluate functions have the same meaning.
+    */
+    class PrintStringStmt : public Statement 
+    {
+    private:
+        ExpNode *_exp; //!< Expresssion the print statement
 
+    public:
+        /*!
+            \brief Constructor of PrintStringStmt
+            \param expression: pointer to ExpNode
+            \post  A new PrintStringStmt is created with the parameter
+        */
+        PrintStringStmt(ExpNode *expression)
+        {
+            this->_exp = expression;
+        }
+
+        /*!
+            \brief   Print the PrintStringStmt
+            \return  void
+            \sa		 evaluate()
+        */
+        void print();
+
+        /*!
+            \brief   Evaluate the PrintStringStmt
+            \return  void
+            \sa		 print()
+        */
+        void evaluate();
+    };
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1685,8 +1780,79 @@ class IfStmtlist : public Statement
   void evaluate();
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+/* NEW in version 0.6 */
+    /*!
+      \class StringOperatorNode
+      \brief Definition of atributes and methods of StringOperatorNode class
+      \note  StringOperatorNode Class publicly inherits from OperatorNode class
+    */
+    class StringOperatorNode : public OperatorNode
+    {
 
+    public:
+        /*!
+            \brief Constructor of StringOperatorNode
+            \param string1: string with the first string
+            \param string2: string with the second string
+            \post  A new StringOperatorNode is created with the value of the parameter
+            \note  Inline function
+        */
+        StringOperatorNode(ExpNode *string1, ExpNode *string2) : OperatorNode(string1, string2)
+        {
+        }
 
+        /*!
+        \brief   Get the type of the expression: STRING
+        \return  int
+        */
+        int getType();
+    };
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+/* NEW in version 0.6 */
+    /*!
+      \class ConcatenationNode
+      \brief Definition of atributes and methods of ConcatenationNode class
+      \note  ConcatenationNode Class publicly inherits from ExpNode class
+    */
+    class ConcatenationNode : public StringOperatorNode
+    {
+
+    public:
+        /*!
+            \brief Constructor of ConcatenationNode
+            \param string1: string with the first string
+            \param string2: string with the second string
+            \post  A new ConcatenationNode is created with the value of the parameter
+            \note  Inline function
+        */
+        ConcatenationNode(ExpNode *string1, ExpNode *string2) : StringOperatorNode(string1, string2)
+        {
+        }
+
+        /*!
+        \brief   Get the type of the expression: STRING
+        \return  int
+        \sa		 print()
+        */
+        int getType();
+
+        /*!
+            \brief   Print the expression
+            \return  void
+            \sa		 evaluateString()
+        */
+        void printAST();
+
+        /*!
+            \brief   Evaluate the expression
+            \return  String
+            \sa		 getType()
+        */
+        std::string evaluateString();
+    };
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1887,6 +2053,136 @@ class RepeatStmtlist : public Statement
 
         void print();
 
+        void evaluate();
+    };
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+    // NEW in version 0.5
+
+    /*!
+      \class   ClearScreenStmt
+      \brief   Definition of atributes and methods of ClearScreenStmt class
+    */
+    class ClearScreenStmt : public Statement
+    {
+    public:
+        ClearScreenStmt(){}
+        void print();
+        void evaluate();
+    };
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // NEW in version 0.5
+
+    /*!
+      \class   PlaceStmt
+      \brief   Definition of atributes and methods of PlaceStmt class
+    */
+    class PlaceStmt : public Statement
+    {
+    private:
+        ExpNode *_expX;
+        ExpNode *_expY; 
+
+    public:
+        PlaceStmt(ExpNode *expX, ExpNode *expY)
+        {
+            this->_expX = expX;
+            this->_expY = expY;
+        }
+
+        void print();
+
+        void evaluate();
+    };
+ ///////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+/* NEW in version 0.6 */
+    /*!
+      \class StringNode
+      \brief Definition of atributes and methods of StringNode class
+      \note  StringNode Class publicly inherits from ExpNode class
+    */
+    class StringNode : public ExpNode
+    {
+    protected:
+        std::string _string; //!< \brief string of the StringNode
+
+    public:
+        /*!
+            \brief Constructor of StringNode
+            \param value: string
+            \post  A new StringNode is created with the value of the parameter
+            \note  Inline function
+        */
+        StringNode(std::string value)
+        {
+            this->_string = value;
+        }
+
+        /*!
+        \brief   Get the type of the expression: STRING
+        \return  int
+        \sa		 print()
+        */
+        int getType();
+
+        /*!
+            \brief   Print the expression
+            \return  void
+            \sa		 evaluateString()
+        */
+        void printAST();
+
+        /*!
+            \brief   Evaluate the expression
+            \return  String
+            \sa		 getType()
+        */
+        std::string evaluateString();
+    };
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    /*!
+      \class   ReadStringStmt
+      \brief   Definition of atributes and methods of ReadStringStmt class (for string variables)
+      \note    ReadStmt Class publicly inherits from Statement class
+               and adds its own print and evaluate functions for strings values
+    */
+    class ReadStringStmt : public Statement
+    {
+    private:
+        std::string _id; //!< Name of the variable of the ReadStmt
+
+    public:
+        /*!
+            \brief Constructor of ReadStmt
+            \param id: string, name of the variable of the ReadStmt
+            \post  A new ReadStmt is created with the parameter
+        */
+        ReadStringStmt(std::string id)
+        {
+            this->_id = id;
+        }
+
+        /*!
+            \brief   Print the ReadStmt
+            \return  void
+            \sa		 evaluate()
+        */
+        void print();
+
+        /*!
+            \brief   Evaluate the ReadStmt
+            \return  void
+            \sa		 print()
+        */
         void evaluate();
     };
 
