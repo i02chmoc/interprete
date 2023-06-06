@@ -580,11 +580,6 @@ value: VALUE NUMBER DOS_PUNTOS stmtlist
 		  	lp::ExpNode * exp = new lp::ConstantNode($2);
 			$$ = new lp::ValueNode(exp, $4);
 	  }	
-	/*| CASE STRING DOS_PUNTOS stmtlist
-	  {
-			lp::ExpNode * exp = new lp::StringNode($2);
-			$$ = new lp::CaseNode(exp, $4);
-	  }	*/
 ;
 
 /* New in version 0.4 */

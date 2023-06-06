@@ -194,9 +194,6 @@ SEPARADOR [ \t\n;]
 ">"		{ return GREATER_THAN; }	/* NEW in example 15 */
 "<"		{ return LESS_THAN; }		/* NEW in example 15 */
 
-"not"		{ return NOT; }				/* NEW in example 15 */
-"or"	{ return OR; }				/* NEW in example 15 */
-"and"	{ return AND; }				/* NEW in example 15 */
 
 "{"		{ return LETFCURLYBRACKET; } 	/* NEW in example 17 */
 "}"		{ return RIGHTCURLYBRACKET; }	/* NEW in example 17 */

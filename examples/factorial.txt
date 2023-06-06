@@ -1,0 +1,16 @@
+repeat
+    print_string("Introduzca un valor entero no negativo para calcular su factorial:\n");
+    read(n);
+    if (n >= 0) then
+        resultado := 1;
+        for i from 1 to n do
+            resultado := resultado * i;
+        end_for
+        print_string("Su factorial es ");
+        print(resultado);
+        print_string("\n");
+    else
+        print_string("El número debe ser no negativo.\n");
+    end_if
+until (n >= 0);
+

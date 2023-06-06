@@ -1,0 +1,71 @@
+eleccionEuros := eleccionDolar :=eleccionLibra :=eleccionYen:= eleccionPeso:=0;
+repeat
+    print_string("Seleccione su moneda:\n1. Euros\n2. Dolar estadounidense\n3. Libra esterlina\n4. Yen japonés\n5. Peso mexicano\n");
+    read(moneda);
+    case (moneda)
+        value 1: 
+            tipoMonedas := 'euros';
+            eleccionEuros++;
+        value 2: 
+            tipoMonedas := 'dolares';
+            eleccionDolar++;
+        value 3: 
+            tipoMonedas := 'libras';
+            eleccionLibra++;
+        value 4: 
+            tipoMonedas := 'yenes';
+            eleccionYen++;
+        value 5: 
+            tipoMonedas := 'pesos';
+            eleccionPeso++;
+        default:
+            print_string("Introduzca el número correspoiente a la moneda que quiere\n");
+    end_case;
+until (moneda^2 - 25 <= 0 and moneda <> 0);
+
+cantidad := -1;
+while (cantidad < 0) do
+    print_string("\nIntroduzca una cantidad:\n");
+    read(cantidad);
+    if(cantidad > 0) then
+        print_string("Cantidad introducida correcta\n");
+    else
+        print_string("Debe introducir un valor mayor que 0\n");
+    end_if
+end_while;
+
+cantEuros := cantDolar :=cantLibra :=cantYen:= cantPeso:=0;
+repeat
+    print_string("\nA que moneda quiere cambiar:\n1. Euros\n2. Dolar estadounidense\n3. Libra esterlina\n4. Yen japonés\n5. Peso mexicano\n");
+    read(menu);
+    case (menu)
+        value 1: 
+            cambioMonedas := "euros";
+            cantEuros++;
+        value 2: 
+            cambioMonedas := 'dolares';
+            cantDolar++;
+        value 3: 
+            cambioMonedas := 'libras';
+            cantLibra++;
+        value 4: 
+            cambioMonedas := 'yenes';
+            cantYen++;
+        value 5: 
+            cambioMonedas := 'pesos';
+            cantPeso++;
+        default:
+            print_string("Introduzca el número correspoiente a la moneda que quiere que se realice el cambio\n");
+    end_case;
+until (menu^2 - 25 <= 0 and menu <> 0);
+
+print_string("\nConversion:\n");
+print_string(tipoMonedas || ": ");
+print(cantidad);
+
+cambioEnEuros := cantidad*eleccionEuros*1 + cantidad*eleccionDolar*0.93 + cantidad*eleccionLibra*1.16 + cantidad*eleccionYen*0.00668 + cantidad*eleccionPeso*0.05;
+cambioFinal := cambioEnEuros*cantEuros*1 + cambioEnEuros*cantDolar*1.18 + cambioEnEuros*cantLibra*0.85 + cambioEnEuros*cantYen*129.70 + cambioEnEuros*cantPeso*18.70;
+
+print_string(cambioMonedas || ": ");
+print(cambioFinal);
+

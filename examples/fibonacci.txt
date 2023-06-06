@@ -1,0 +1,30 @@
+repeat
+    print_string("Introduzca un valor entero no negativo para calcular su fibonacci:\n");
+    read(n);
+    if (n > 3 )then
+        pre := 0;
+        pos := 1;
+
+        for x 
+            from 3
+            to n
+            do
+                val := pre + pos;
+                pre := pos;
+                pos := val;
+                print (val);
+        end_for
+        print_string("Su fibonacci es ");
+        print(val);
+    else if ( n < 0 )then
+        else if ( n == 0 )then
+                print_string("El fibonacci de 0 es 0\n");
+            else if ( n <> 3 )then
+                    print_string("Su fibonacci es 1\n");
+                 else
+                    print_string("Su fibonacci es 2\n");
+                end_if
+            end_if
+        end_if
+    end_if
+until (n >= 0);

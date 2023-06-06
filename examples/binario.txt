@@ -1,0 +1,17 @@
+print_string('Programa que convierte un número entero a código binario \n');
+print_string('Introduce un número entero: \n');
+read(n);
+
+r := ' ';
+
+while (n <> 0) do
+	if (n % 2 == 0) then
+		r := '0' || r;  
+	else
+		r := '1' || r;
+	end_if
+
+    n := n // 2;
+end_while
+
+print_string('Número en código binario: ' || r || '\n');

@@ -65,6 +65,8 @@ lp::AST *root; //!< Root of the abstract syntax tree AST
 
 #include "table/init.hpp"
 
+/* NEW in version 0.7 */
+#include "miscelanea.hpp"
 
 /*
  jhmp_buf
@@ -109,7 +111,7 @@ int main(int argc, char *argv[])
       otherwise
             the input device is the keyboard (stdin)
  */
- if (argc == 2) 
+ if (argc == 2 && existeArchivo(argv[1])) 
  {
      yyin = fopen(argv[1],"r");
 

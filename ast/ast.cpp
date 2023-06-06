@@ -1377,9 +1377,9 @@ void lp::PrintStmt::printAST()
 
 void lp::PrintStmt::evaluate() 
 {
-	std::cout << BIYELLOW; 
+	/*std::cout << BIYELLOW; 
 	std::cout << "print: ";
-	std::cout << RESET; 
+	std::cout << RESET; */
 
 	switch(this->_exp->getType())
 	{
